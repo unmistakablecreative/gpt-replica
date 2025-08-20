@@ -26,9 +26,8 @@ if ! command -v ollama &>/dev/null; then
   curl -fsSL https://ollama.com/install.sh | sh
 fi
 
-# 5. Pull model (default: mistral)
-echo "📥 Downloading model..."
-ollama pull mistral
+# 5. Set model name
+MODEL_NAME="llama3"
 
 # 6. Write connect_open.py
 echo "🛠️ Generating connect_open.py..."
@@ -37,7 +36,7 @@ import gradio as gr
 import requests
 
 OLLAMA_API = "http://localhost:11434/api/chat"
-MODEL_NAME = "mistral"
+MODEL_NAME = "$MODEL_NAME"
 
 chat_history = []
 
@@ -67,8 +66,7 @@ def chat(user_input, history):
         return formatted, ""
 
     except Exception as e:
-        error_msg = f"❌ Error: {str(e)}"
-        return history + [(user_input, error_msg)], ""
+        return history + [(user_input, f"❌ Error: {str(e)}")], ""
 
 def reset():
     global chat_history
@@ -84,7 +82,7 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="blue")) as demo:
         </style>
         <div style='text-align: center; padding-top: 1em;'>
             <h1>🧠 GPT-OSS Replica</h1>
-            <p style='font-size: 0.95em; color: gray;'>Local, private, and fully free. Powered by <a href='https://ollama.com' target='_blank'>Ollama</a>.</p>
+            <p style='font-size: 0.95em; color: gray;'>Running locally with <code>llama3</code> via <a href='https://ollama.com' target='_blank'>Ollama</a>. No keys. No cloud. No limits.</p>
         </div>
     """)
 
